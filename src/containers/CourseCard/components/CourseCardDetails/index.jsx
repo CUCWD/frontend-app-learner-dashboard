@@ -6,6 +6,8 @@ import { Button } from '@openedx/paragon';
 import useCardDetailsData from './hooks';
 import './index.scss';
 
+import CourseCardMetadataSlot from 'plugin-slots/CourseCardMetadataSlot';
+
 export const CourseCardDetails = ({ cardId }) => {
   const {
     providerName,
@@ -21,6 +23,9 @@ export const CourseCardDetails = ({ cardId }) => {
   return (
     <span className="small" data-testid="CourseCardDetails">
       {providerName} • {courseNumber}
+      <CourseCardMetadataSlot
+        cardId={cardId}
+      />
       {!(isEntitlement && !isFulfilled) && accessMessage && (
         ` • ${accessMessage}`
       )}
