@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { getConfig } from '@edx/frontend-platform';
 import { PluginSlot } from '@openedx/frontend-plugin-framework';
 import LookingForChallengeWidget from 'widgets/LookingForChallengeWidget';
 
@@ -9,7 +10,7 @@ export const WidgetSidebarSlot = () => (
     id="org.openedx.frontend.learner_dashboard.widget_sidebar.v1"
     idAliases={['widget_sidebar_slot']}
   >
-    <LookingForChallengeWidget />
+    {getConfig().ENABLE_DISCOVER_NEW !== false && <LookingForChallengeWidget />}
   </PluginSlot>
 );
 
