@@ -40,8 +40,14 @@ describe('LearnerDashboardHeader', () => {
     expect(wrapper.instance.findByType(Header)[0].props.secondaryMenuItems.length).toBe(1);
   });
   test('should display Programs link if it is enabled by configuration', () => {
-    mergeConfig({ ENABLE_PROGRAMS: true });
+    mergeConfig({ ENABLE_PROGRAMS: true, ENABLE_DISCOVER_NEW: true });
     const wrapper = shallow(<LearnerDashboardHeader />);
     expect(wrapper.instance.findByType(Header)[0].props.mainMenuItems.length).toBe(3);
+  });
+
+  test('should hide Discover New when disabled by configuration', () => {
+    mergeConfig({ ENABLE_PROGRAMS: false, ENABLE_DISCOVER_NEW: false });
+    const wrapper = shallow(<LearnerDashboardHeader />);
+    expect(wrapper.instance.findByType(Header)[0].props.mainMenuItems).toHaveLength(1);
   });
 });

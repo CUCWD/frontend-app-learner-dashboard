@@ -22,14 +22,14 @@ const getLearnerHeaderMenu = (
       href: `${urls.programsUrl()}`,
       content: formatMessage(messages.program),
     }] : []),
-    {
+    ...(getConfig().ENABLE_DISCOVER_NEW !== false ? [{
       type: 'item',
       href: `${urls.baseAppUrl(courseSearchUrl)}`,
       content: formatMessage(messages.discoverNew),
       onClick: (e) => {
         exploreCoursesClick(e);
       },
-    },
+    }] : []),
   ],
   secondaryMenu: [
     ...(getConfig().SUPPORT_URL ? [{
