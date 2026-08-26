@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { mergeConfig } from '@edx/frontend-platform';
+import { shallow } from '@edx/react-unit-test-utils';
 
 import { IntlProvider } from '@edx/frontend-platform/i18n';
 import { reduxHooks } from 'hooks';
@@ -13,10 +14,17 @@ jest.mock('hooks', () => ({
 const courseSearchUrl = 'mock-url';
 
 describe('WidgetSidebar', () => {
-  it('renders PluginSlot with correct children', () => {
-    reduxHooks.usePlatformSettingsData.mockReturnValueOnce({ courseSearchUrl });
-    render(<IntlProvider locale="en"><WidgetSidebarSlot /></IntlProvider>);
-    const pluginSlot = screen.getByText('Looking for a new challenge?');
-    expect(pluginSlot).toBeDefined();
+  beforeEach(() => jest.resetAllMocks());
+
+  test('snapshots', () => {
+    mergeConfig({ ENABLE_DISCOVER_NEW: true });
+    const wrapper = shallow(<WidgetSidebarSlot />);
+    expect(wrapper.snapshot).toMatchSnapshot();
+  });
+
+  test('hides the course-discovery widget when disabled by configuration', () => {
+    mergeConfig({ ENABLE_DISCOVER_NEW: false });
+    const wrapper = shallow(<WidgetSidebarSlot />);
+    expect(wrapper.instance.findByType('LookingForChallengeWidget')).toHaveLength(0);
   });
 });

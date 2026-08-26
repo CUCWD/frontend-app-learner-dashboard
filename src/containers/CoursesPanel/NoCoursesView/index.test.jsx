@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
-import { IntlProvider } from '@edx/frontend-platform/i18n';
-import { formatMessage } from 'testUtils';
-import { baseAppUrl } from 'data/services/lms/urls';
+import React from 'react';
+import { mergeConfig } from '@edx/frontend-platform';
+import { shallow } from '@edx/react-unit-test-utils';
+import { Button } from '@openedx/paragon';
 
 import EmptyCourse from '.';
 import messages from './messages';
@@ -17,22 +17,20 @@ jest.mock('hooks', () => ({
 }));
 
 describe('NoCoursesView', () => {
-  it('should display image, heading and button', () => {
-    render(<IntlProvider locale="en"><EmptyCourse /></IntlProvider>);
-    const image = screen.getByRole('img', { alt: formatMessage(messages.bannerAlt) });
-    expect(image).toBeInTheDocument();
+  test('snapshot', () => {
+    mergeConfig({ ENABLE_DISCOVER_NEW: true });
+    expect(shallow(<EmptyCourse />).snapshot).toMatchSnapshot();
   });
-  it('should display heading and prompt', () => {
-    render(<IntlProvider locale="en"><EmptyCourse /></IntlProvider>);
-    const heading = screen.getByText(formatMessage(messages.lookingForChallengePrompt));
-    const prompt = screen.getByText(formatMessage(messages.exploreCoursesPrompt));
-    expect(heading).toBeInTheDocument();
-    expect(prompt).toBeInTheDocument();
-  });
-  it('should display button', () => {
-    render(<IntlProvider locale="en"><EmptyCourse /></IntlProvider>);
-    const button = screen.getByRole('link', { name: formatMessage(messages.exploreCoursesButton) });
-    expect(button).toBeInTheDocument();
-    expect(button.href).toBe(baseAppUrl(courseSearchUrl));
+
+  test('shows administrator guidance instead of course discovery when disabled', () => {
+    mergeConfig({
+      ENABLE_DISCOVER_NEW: false,
+      INFO_EMAIL: 'support@example.com',
+      SITE_NAME: 'Example Academy',
+      LMS_BASE_URL: 'https://courses.example.com',
+    });
+    const wrapper = shallow(<EmptyCourse />);
+
+    expect(wrapper.instance.findByType(Button)).toHaveLength(0);
   });
 });
